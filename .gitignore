@@ -1,0 +1,190 @@
+package com.csscorp.jayakumarmanian.cadence;
+
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.SeekBar;
+import android.widget.TextView;
+
+/**
+ * Created by JayakumarManian on 25/07/15 AD.
+ */
+public class SettingsView extends Fragment implements SeekBar.OnSeekBarChangeListener {
+    SeekBar lTesla,hTesla;
+    int lTeslaValue,hTeslaValue;
+    TextView lTeslaResult,hTeslaResult;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.settingsview, container, false);
+        lTesla = (SeekBar)v.findViewById(R.id.lTesla);
+        lTeslaResult = (TextView)v.findViewById(R.id.lTeslaResult);
+
+        hTesla=(SeekBar)v.findViewById(R.id.hTesla);
+        hTeslaResult=(TextView)v.findViewById(R.id.hTeslaResult);
+
+        //set change listener
+        lTesla.setOnSeekBarChangeListener(this);
+        hTesla.setOnSeekBarChangeListener(this);
+        return v;
+    }
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress,
+                                  boolean fromUser) {
+        switch (seekBar.getId()) {
+            case R.id.lTesla:
+                lTeslaValue = progress;
+                lTeslaResult.setText ("Min Magnetic Strength:  "+lTeslaValue);
+                break;
+            case R.id.hTesla:
+                hTeslaValue= progress;
+                hTeslaResult.setText("Max Magnetic Strength:  "+hTeslaValue);
+                break;
+        }
+       }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+        // TODO Auto-generated method stub
+    }
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        // TODO Auto-generated method stub
+    }
+}
+
+
+
+/////
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity$PlaceholderFragment">
+    //SeekBar layout for Low_Tesla
+    <SeekBar
+        android:id="@+id/lTesla"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:progress="70"
+        android:max="120"
+        android:paddingTop="20dp" />
+    //TextViews for SeekBarlegend
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal" >
+        <TextView
+            android:id="@+id/tvLabel1"
+            android:paddingLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0" />
+        <TextView
+            android:id="@+id/tvLabel2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="60" />
+        <TextView
+            android:id="@+id/tvLabel3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:paddingRight="10dp"
+            android:text="120" />
+    </RelativeLayout>
+    //TextView to display result
+    <TextView
+        android:id="@+id/lTeslaResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="20dp"
+        android:paddingLeft="10dp"
+        android:text="Min Magnetic Strength"
+        android:layout_below="@+id/lTesla" />
+    //SeekBar layout
+    //TextViews for SeekBarlegend
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:layout_below="@+id/lTesla"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="95dp"
+        android:id="@+id/relativeLayout">
+        <TextView
+            android:id="@+id/tvLabel11"
+            android:paddingLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0" />
+        <TextView
+            android:id="@+id/tvLabel22"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="120" />
+        <TextView
+            android:id="@+id/tvLabel33"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:paddingRight="10dp"
+            android:text="240" />
+
+        <SeekBar
+            android:id="@+id/hTesla"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:progress="150"
+            android:max="240"
+            android:paddingTop="20dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+    </RelativeLayout>
+    //TextView to display result
+    <TextView
+        android:id="@+id/hTeslaResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="20dp"
+        android:paddingLeft="10dp"
+        android:text="Max Magnetic Strength"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+    <LinearLayout  android:padding="10dp"
+        android:layout_width="match_parent"
+        android:gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:background="@android:color/darker_gray"
+        android:orientation="horizontal"
+        android:layout_below="@+id/hTeslaResult"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="56dp">
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="SAVE"
+        android:id="@+id/Clear_btn"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:layout_below="@+id/Y"
+        android:shadowColor="@android:color/holo_red_light"
+        android:background="@android:color/holo_red_light"
+        />
+    </LinearLayout>
+   </RelativeLayout>
