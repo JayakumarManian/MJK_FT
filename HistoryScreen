@@ -1,0 +1,184 @@
+package com.csscorp.jayakumarmanian.cadence;
+
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
+/**
+ * Created by JayakumarManian on 25/07/15 AD.
+ */
+public class HistoryScreen extends Fragment implements View.OnClickListener {
+    ListView mListView;
+    private Button btnMTClear;
+    public Cursor res;
+    List<HashMap<String,String>> list=new ArrayList<>();
+
+    DatabaseHandler db;
+
+    CadenceListAdapter listAdapter;
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        View v=inflater.inflate(R.layout.historyscreen, container, false);
+        btnMTClear = (Button) v.findViewById(R.id.Clear_btn);
+        btnMTClear.setOnClickListener(this);
+        mListView=(ListView)v.findViewById(R.id.cadencelist);
+        db = new DatabaseHandler(getActivity());
+        Sensorhistory();
+        return  v;
+
+    }
+
+    @Override
+    public void onPause() {
+        // Unregister the listene
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Register magnetic sensor
+    }
+
+    public void Sensorhistory() {
+                        Cursor res1 = db.getAllData_cadence();
+                        if (res1.getCount() == 0) {
+                            showMessage("UserData", "Nothing Found");
+                        }
+                        list.clear();
+                        StringBuffer buffer1 = new StringBuffer();
+                        while (res1.moveToNext()) {
+                            HashMap<String,String>map=new HashMap<String, String>();
+                            map.put("id",Integer.toString(res1.getInt(0)));
+                            map.put("date",res1.getString(1));
+                           // map.put("hour",res1.getString(3));
+                           // map.put("minute",res1.getString(4));
+                            map.put("cadence",res1.getString(2));
+                            list.add(map);
+                             }
+                        listAdapter=new CadenceListAdapter(list,getActivity());
+
+                        mListView.setAdapter(listAdapter);
+    }
+
+    public void showMessage(String title, String Message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(Message);
+        builder.show();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.Clear_btn:
+                db.wipedata_cadence();
+            default:
+                break;
+        }
+    }
+
+    public class CadenceListAdapter extends BaseAdapter {
+
+        LayoutInflater inf;
+        int selectedposition=-1;
+        Context mcon;
+        List<HashMap<String,String>> mlist=new ArrayList<>();
+        LinearLayout viewhide;
+        public CadenceListAdapter(List<HashMap<String,String>> list,Context con){
+            this.mcon=con;
+            this.mlist=list;
+
+            inf=(LayoutInflater)mcon.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+
+        @Override
+        public int getCount() {
+
+            Log.i("testcount ", "===> " + mlist.size());
+            return mlist.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+
+            View view=inf.inflate(R.layout.listitems,null);
+            viewhide=(LinearLayout)view.findViewById(R.id.expandview);
+
+            TextView sessionView=(TextView)view.findViewById(R.id.session);
+            TextView hourView=(TextView)view.findViewById(R.id.hour);
+
+            TextView minuteView=(TextView)view.findViewById(R.id.min);
+
+            TextView cadenceView=(TextView)view.findViewById(R.id.cadence);
+
+            HashMap<String,String> map=new HashMap<>();
+            map= mlist.get(position);
+            sessionView.setText("Session  "+map.get("id") +" - "+map.get("date") );
+
+           // hourView.setText("Date  "+map.get("hour"));
+
+           // minuteView.setText("Minute  "+map.get("minute"));
+
+            cadenceView.setText("Cadence  " + map.get("cadence"));
+
+            if(selectedposition==position){
+                viewhide.setVisibility(View.VISIBLE);
+            }else
+            {
+                viewhide.setVisibility(View.GONE);
+
+            }
+
+            sessionView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                selectedposition=position;
+                    notifyDataSetChanged();
+                   }
+            });
+            return view;
+        }
+    }
+}
